@@ -3,6 +3,9 @@ env:
   imageName: "${{ secrets.ACR_LOGIN_SERVER }}/techexcel/csapi:${{github.run_number}}"
   appName: ${{ vars.APP_PREFIX }}-api
   appPath: ./src/ContosoSuitesWebAPI
+permissions:
+  id-token: write
+  contents: read
 on:
   push:
     branches: [ main ]
