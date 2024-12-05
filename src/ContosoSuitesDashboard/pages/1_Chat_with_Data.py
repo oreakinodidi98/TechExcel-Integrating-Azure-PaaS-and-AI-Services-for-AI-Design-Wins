@@ -5,7 +5,14 @@ st.set_page_config(layout="wide")
 
 def create_chat_completion(messages):
     """Create and return a new chat completion request. Key assumptions:
-    - The Azure OpenAI endpoint, key, and deployment name are stored in Streamlit secrets."""
+    - The Azure OpenAI endpoint, key, and deployment name are stored in Streamlit secrets.
+    - The Azure Cognitive Search endpoint, key, and index name are also stored in Streamlit secrets.
+    Args:
+        messages (list): A list of message dictionaries, where each dictionary contains:
+            - role (str): The role of the message sender (e.g., "user" or "assistant").
+            - content (str): The content of the message.
+    Returns:
+        openai.ChatCompletion: A chat completion object that streams the response."""
 
     # Retrieve secrets from the Streamlit secret store.
     # This is a secure way to store sensitive information that you don't want to expose in your code.
@@ -14,6 +21,11 @@ def create_chat_completion(messages):
     aoai_endpoint = st.secrets["aoai"]["endpoint"]
     aoai_key = st.secrets["aoai"]["key"]
     aoai_deployment_name = st.secrets["aoai"]["deployment_name"]
+    
+    search_endpoint = st.secrets["search"]["endpoint"]
+    search_key = st.secrets["search"]["key"]
+    search_index_name = st.secrets["search"]["index_name"]
+
 
     client = openai.AzureOpenAI(
         api_key=aoai_key,
@@ -27,7 +39,22 @@ def create_chat_completion(messages):
             {"role": m["role"], "content": m["content"]}
             for m in messages
         ],
-        stream=True
+        stream=True,
+          extra_body={
+              "data_sources": [
+                  {
+                      "type": "azure_search",
+                      "parameters": {
+                          "endpoint": search_endpoint,
+                          "index_name": search_index_name,
+                          "authentication": {
+                              "type": "api_key",
+                              "key": search_key
+                          }
+                      }
+                  }
+              ]
+          }
     )
 
 def handle_chat_prompt(prompt):
