@@ -14,10 +14,12 @@ using Microsoft.SemanticKernel.ChatCompletion;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 var config = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .AddEnvironmentVariables()
     .Build();
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -47,6 +49,7 @@ builder.Services.AddSingleton<Kernel>((_) =>
     kernelBuilder.Plugins.AddFromType<DatabaseService>();
     return kernelBuilder.Build();
 });
+
 // Create a single instance of the AzureOpenAIClient to be shared across the application.
 builder.Services.AddSingleton<AzureOpenAIClient>((_) =>
 {
@@ -120,6 +123,7 @@ app.MapPost("/Chat", async Task<string> (HttpRequest request) =>
 })
     .WithName("Chat")
     .WithOpenApi();
+
 
 
 // This endpoint is used to vectorize a text string.

@@ -15,7 +15,7 @@ public class DatabaseService : IDatabaseService
     /// <summary>
     /// Get all hotels from the database.
     [KernelFunction]
-        [Description("Get all hotels.")]    
+    [Description("Get all hotels.")]    
     /// </summary>
     public async Task<IEnumerable<Hotel>> GetHotels()
     {
@@ -197,7 +197,5 @@ public class DatabaseService : IDatabaseService
 
         return bookings;
     }
-
-
 
 }
